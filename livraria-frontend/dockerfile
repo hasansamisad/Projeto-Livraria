@@ -1,0 +1,22 @@
+# Usamos a mesma versão LTS do Node do backend para manter a paridade de ambiente
+FROM node:20
+
+# Definimos a pasta de trabalho dentro do container
+WORKDIR /usr/app
+
+# Copiamos os arquivos de configuração de dependências primeiro (otimiza o cache de camadas do Docker)
+COPY package*.json ./
+
+# Instalamos todas as dependências do projeto
+RUN npm install
+
+# Copiamos o restante dos arquivos do seu frontend para dentro do container
+COPY . .
+
+# Expomos a porta padrão que o Vite utiliza
+EXPOSE 5173
+
+# COMANDO CHAVE PARA O MERCADO:
+# O "--host" é obrigatório no Docker para fazer o Vite aceitar conexões vindas 
+# de fora do container (permitindo que você acesse pelo navegador da sua máquina física)
+CMD ["npm", "run", "dev", "--", "--host"]

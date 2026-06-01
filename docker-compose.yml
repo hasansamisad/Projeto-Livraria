@@ -1,0 +1,70 @@
+services:
+  # --- BANCO DE DADOS (PostgreSQL) ---
+  database:
+    image: postgres:15
+    container_name: livraria-database
+    restart: always
+    environment:
+      POSTGRES_DB: Livraria
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    volumes:
+      - database_data:/var/lib/postgresql/data
+    networks:
+      - livraria-network
+    healthcheck: # Healthcheck específico para o Postgres
+      test: ["CMD-SHELL", "pg_isready -U postgres -d Livraria"]
+      timeout: 5s
+      retries: 5
+
+  # --- BACKEND (Node.js API) ---
+  backend:
+    build:
+      context: ./livraria-api
+      dockerfile: Dockerfile
+    container_name: livraria-api
+    restart: always
+    ports:
+      - "3001:3001"
+    # MÁGICA AQUI: Aponta para o .env dentro da pasta do backend
+    env_file:
+      - ./livraria-api/.env
+    volumes:
+      - ./livraria-api:/usr/app
+      - /usr/app/node_modules
+    networks:
+      - livraria-network
+    depends_on:
+      database:
+        condition: service_healthy
+
+  # --- FRONTEND (Vite / React) ---
+  frontend:
+    build:
+      context: ./livraria-frontend
+      dockerfile: Dockerfile
+    container_name: livraria-frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    # MÁGICA AQUI: Já deixei preparado para quando você criar o .env do frontend
+    env_file:
+      - ./livraria-frontend/.env
+    volumes:
+      - ./livraria-frontend:/usr/app
+      - /usr/app/node_modules
+    networks:
+      - livraria-network
+    depends_on:
+      - backend
+
+# --- REDES E VOLUMES ---
+networks:
+  livraria-network:
+    driver: bridge
+
+volumes:
+  database_data:
+    driver: local
