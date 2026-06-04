@@ -61,8 +61,9 @@ Assim que o Docker inicializar os serviços, as plataformas estarão disponívei
 
 * **API Backend:** http://localhost:3000
 
-## Estrutura do Repositório
+## 📂 Estrutura do Repositório
 
+```text
 ├── livraria-api/          # Servidor Node.js, Sequelize ORM e Models (Backend)
 ├── livraria-frontend/     # Aplicação React, Redux Store e Componentes Tailwind (Frontend)
 │   ├── src/
@@ -71,6 +72,7 @@ Assim que o Docker inicializar os serviços, as plataformas estarão disponívei
 │   │   ├── store/         # Configuração central do Redux Toolkit (Slices e Store)
 │   │   └── routes/        # Arquitetura de rotas do React Router Dom
 └── docker-compose.yml     # Orquestração dos containers de desenvolvimento
+```
 
 ## Autor
 
