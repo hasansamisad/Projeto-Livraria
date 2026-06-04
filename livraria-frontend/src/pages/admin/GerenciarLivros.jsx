@@ -163,7 +163,7 @@ export function GerenciarLivros() {
             onClick={handleCriarLivro}
             className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors shadow-lg cursor-pointer"
           >
-            ➕ Adicionar Livro
+             Adicionar Livro
           </button>
         )}
       </div>
@@ -174,7 +174,7 @@ export function GerenciarLivros() {
           <FormLivro
             key={livroParaEditar ? `editar-${livroParaEditar.id}` : "novo-livro"}
             livroParaEditar={livroParaEditar}
-            autoresDisponiveis={autores} // 👈 Passamos a lista de autores para o formulário criar o Select!
+            autoresDisponiveis={autores} 
             onSubmit={handleSalvarLivro}
             onCancelar={handleCancelar}
             isSubmitting={isSubmitting}

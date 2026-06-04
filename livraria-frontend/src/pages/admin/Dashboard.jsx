@@ -26,7 +26,7 @@ export function Dashboard() {
           booksCount: booksData.length,
           authorsCount: authorsData.length,
         });
-      } catch (err) {
+      } catch  {
         setError("Erro ao carregar os dados do painel principal.");
       } finally {
         setLoading(false);
@@ -52,7 +52,7 @@ export function Dashboard() {
       {/* Estado de Erro */}
       {error && (
         <div className="rounded-xl bg-red-500/10 border border-red-500/20 p-4 text-sm text-red-400 font-medium max-w-xl">
-          ⚠️ {error}
+        {error}
         </div>
       )}
 
@@ -74,9 +74,7 @@ export function Dashboard() {
                 )}
               </h2>
             </div>
-            <div className="p-4 bg-indigo-500/10 text-indigo-400 text-3xl rounded-xl border border-indigo-500/20">
-              📚
-            </div>
+           
           </div>
           <div className="mt-4 pt-4 border-t border-slate-800/60">
             <Link to="/admin/books" className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors">
@@ -100,9 +98,7 @@ export function Dashboard() {
                 )}
               </h2>
             </div>
-            <div className="p-4 bg-emerald-500/10 text-emerald-400 text-3xl rounded-xl border border-emerald-500/20">
-              ✍️
-            </div>
+            
           </div>
           <div className="mt-4 pt-4 border-t border-slate-800/60">
             <Link to="/admin/authors" className="text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition-colors">
@@ -113,7 +109,7 @@ export function Dashboard() {
 
       </div>
 
-      {/* 🚀 SEÇÃO DE AÇÕES RÁPIDAS */}
+      {/*  SEÇÃO DE AÇÕES RÁPIDAS */}
       <div className="bg-slate-850 border border-slate-800 rounded-2xl p-6 shadow-md space-y-4">
         <h3 className="text-lg font-bold text-white">Ações Rápidas</h3>
         <p className="text-sm text-slate-400">
@@ -125,13 +121,13 @@ export function Dashboard() {
             to="/admin/books"
             className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white hover:bg-indigo-500 transition-all duration-200 shadow-md cursor-pointer"
           >
-            ➕ Novo Livro
+             Novo Livro
           </Link>
           <Link
             to="/admin/authors"
             className="inline-flex items-center gap-2 rounded-xl bg-slate-700 hover:bg-slate-600 border border-slate-600 px-4 py-3 text-sm font-semibold text-slate-200 hover:text-white transition-all duration-200 cursor-pointer"
           >
-            ➕ Novo Autor
+             Novo Autor
           </Link>
         </div>
       </div>
