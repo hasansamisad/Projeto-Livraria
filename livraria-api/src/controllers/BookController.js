@@ -1,31 +1,57 @@
+import { Op } from 'sequelize';
 import Book from '../models/Books';
 import BookCover from '../models/BookCover';
 import Author from '../models/Authors';
-// import BookCover from '../models/BookCover';
 
 class BookController {
   async index(req, res) {
     try {
+      const page = parseInt(req.query.page, 10) || 1; // Página atual, padrão para 1
+      const limit = parseInt(req.query.limit, 10) || 10;
+      const offset = (page - 1) * limit; // Cálculo do offset para a consulta
+
+      const { search, genre, authorId } = req.query;
+
+      const whereCondition = {};
+
+      // Validação defensiva: só filtra se a string não for vazia
+      if (search && search.trim() !== '') {
+        whereCondition.title = {
+          [Op.iLike]: `%${search}%`,
+        };
+      }
+
+      if (genre && genre.trim() !== '') {
+        whereCondition.genre = genre;
+      }
+
+      const authorInclude = {
+        model: Author,
+        attributes: ['id', 'name'],
+        required: false, // Não quebra a query caso o autor não tenha livros vinculados
+      };
+
+      // Só aplica o filtro de ID do autor se ele for enviado e válido
+      if (authorId && authorId.trim() !== '') {
+        authorInclude.where = { id: authorId };
+        authorInclude.required = true;
+        // Aqui forçamos o INNER JOIN apenas se queremos os livros DELE
+      }
+
       const books = await Book.findAll({
+        where: whereCondition,
         attributes: ['id', 'title', 'pages', 'genre'],
         order: [['id', 'DESC']],
+        limit,
+        offset,
         include: [
-          {
-            model: Author,
-            attributes: ['name'],
-          },
+          authorInclude,
           {
             model: BookCover,
             attributes: ['filename', 'url'], // Garante que o Sequelize monte a propriedade VIRTUAL 'url'
           },
         ],
       });
-
-      if (books.length === 0) {
-        return res.status(400).json({
-          errors: ['No book found'],
-        });
-      }
 
       return res.json(books);
     } catch (e) {

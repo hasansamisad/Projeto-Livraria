@@ -109,28 +109,7 @@ export function Dashboard() {
 
       </div>
 
-      {/*  SEÇÃO DE AÇÕES RÁPIDAS */}
-      <div className="bg-slate-850 border border-slate-800 rounded-2xl p-6 shadow-md space-y-4">
-        <h3 className="text-lg font-bold text-white">Ações Rápidas</h3>
-        <p className="text-sm text-slate-400">
-          Adicione novos registros ao sistema com apenas um clique:
-        </p>
-        
-        <div className="flex flex-wrap gap-4 pt-2">
-          <Link
-            to="/admin/books"
-            className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white hover:bg-indigo-500 transition-all duration-200 shadow-md cursor-pointer"
-          >
-             Novo Livro
-          </Link>
-          <Link
-            to="/admin/authors"
-            className="inline-flex items-center gap-2 rounded-xl bg-slate-700 hover:bg-slate-600 border border-slate-600 px-4 py-3 text-sm font-semibold text-slate-200 hover:text-white transition-all duration-200 cursor-pointer"
-          >
-             Novo Autor
-          </Link>
-        </div>
-      </div>
+      
 
     </div>
   );

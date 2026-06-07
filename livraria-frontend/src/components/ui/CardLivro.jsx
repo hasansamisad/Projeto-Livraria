@@ -37,7 +37,7 @@ export function CardLivro({ book }) {
           </span>
         )}
 
-        {/* 🚀 INDICADORES VISUAIS REATIVOS (Canto Superior Direito) */}
+        {/*  INDICADORES VISUAIS REATIVOS (Canto Superior Direito) */}
         <div className="absolute top-3 right-3 flex items-center gap-1.5">
           {isRead && (
             <span 
@@ -71,7 +71,7 @@ export function CardLivro({ book }) {
             {book.Author?.name || "Autor Desconhecido"}
           </p>
           <p className="text-xs text-slate-500 mt-2">
-            📚 {book.pages || "?"} páginas
+             {book.pages || "?"} páginas
           </p>
         </div>
 
