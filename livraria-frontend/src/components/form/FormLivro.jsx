@@ -9,21 +9,22 @@ export function FormLivro({ livroParaEditar, autoresDisponiveis, onSubmit, onCan
   const [release_year, setReleaseYear] = useState(livroParaEditar?.release_year || livroParaEditar?.releaseYear || "");
   const [author_id, setAuthorId] = useState(livroParaEditar?.author_id || livroParaEditar?.authorId || "");
   const [pages, setPages] = useState(livroParaEditar?.pages || "");
-  const [bookCover, setBookCover] = useState(livroParaEditar?.cover_url || "");
+  const [bookFile, setBookFile] = useState(null); 
+  const [urlExterna, setUrlExterna] = useState(livroParaEditar?.cover_url || ""); 
   const [synopsis, setSynopsis] = useState(livroParaEditar?.synopsis || "");
   const [error, setError] = useState("");
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setBookCover(e.target.files[0]);
+      setBookFile(e.target.files[0]);
+      setUrlExterna(""); 
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setError(""); // Limpa erros anteriores antes de validar
+    setError(""); 
 
-    // Validações simples de segurança no Front-end
     if (title.trim().length < 2) {
       setError("O título do livro deve ter pelo menos 2 caracteres.");
       return;
@@ -39,27 +40,26 @@ export function FormLivro({ livroParaEditar, autoresDisponiveis, onSubmit, onCan
       return;
     }
 
-    // Criamos o FormData unificado contendo o estado atualizado dos inputs textuais e arquivo
     const formData = new FormData();
     formData.append("title", title);
     formData.append("genre", genre || "Não especificado");
     formData.append("release_year", release_year ? parseInt(release_year, 10) : "");
     formData.append("author_id", parseInt(author_id, 10));
     formData.append("pages", parseInt(pages, 10));
-    formData.append("synopsis", synopsis); // Envia o estado local da sinopse perfeitamente
+    formData.append("synopsis", synopsis);
     
-    if (bookCover) {
-      formData.append("bookCover", bookCover);
+    if (bookFile) {
+      formData.append("cover", bookFile); 
+    } else if (urlExterna.trim()) {
+      formData.append("url_externa", urlExterna.trim());
     }
 
-    // Passa o pacote completo com todos os dados digitados para o componente pai salvar
     onSubmit(formData);
   };
 
   return (
     <div className="bg-slate-850 border border-slate-800 rounded-2xl p-6 shadow-xl max-w-lg mx-auto animate-fadeIn">
       
-      {/* Topo do Formulário */}
       <div className="mb-6">
         <h3 className="text-xl font-bold text-white">
           {livroParaEditar ? " Editar Livro" : " Adicionar Novo Livro"}
@@ -71,14 +71,12 @@ export function FormLivro({ livroParaEditar, autoresDisponiveis, onSubmit, onCan
 
       <form onSubmit={handleSubmit} className="space-y-5">
         
-        {/* Alerta de Erro Local */}
         {error && (
           <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-3 text-xs text-red-400 font-medium">
             {error}
           </div>
         )}
 
-        {/* Input Título */}
         <Input
           label="Título do Livro"
           id="book-title"
@@ -88,7 +86,6 @@ export function FormLivro({ livroParaEditar, autoresDisponiveis, onSubmit, onCan
           required
         />
 
-        {/* SELECT DINÂMICO DE AUTORES */}
         <div className="flex flex-col gap-1.5">
           <label htmlFor="book-author" className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
             Autor Vinculado <span className="text-red-500">*</span>
@@ -111,21 +108,40 @@ export function FormLivro({ livroParaEditar, autoresDisponiveis, onSubmit, onCan
           </select>
         </div>
 
-        {/* Input de Upload da Capa */}
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="book-cover" className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-            Capa do Livro (.jpg, .png)
-          </label>
-          <input
-            id="book-cover"
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="w-full rounded-xl border border-slate-800 bg-slate-900 px-4 py-2.5 text-sm text-slate-400 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 file:transition-colors file:cursor-pointer"
+        <div className="border border-slate-800/60 p-4 rounded-xl space-y-4 bg-slate-900/20">
+          <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider block">
+            Imagem de Capa
+          </span>
+
+          <Input
+            label="Opção 1: Link/URL da Imagem externa"
+            id="book-url-cover"
+            placeholder="Ex: https://imagens.com/livro.jpg"
+            value={urlExterna}
+            onChange={(e) => {
+              setUrlExterna(e.target.value);
+              if (e.target.value) setBookFile(null); 
+            }}
+            disabled={!!bookFile} 
           />
+
+          <div className="text-center text-xs font-semibold text-slate-600 my-1">OU</div>
+
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="book-cover" className="text-xs font-semibold text-slate-400">
+              Opção 2: Upload de arquivo físico (.jpg, .png)
+            </label>
+            <input
+              id="book-cover"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              disabled={!!urlExterna} 
+              className="w-full rounded-xl border border-slate-800 bg-slate-900 px-4 py-2.5 text-sm text-slate-400 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 file:transition-colors file:cursor-pointer disabled:opacity-40"
+            />
+          </div>
         </div>
 
-        {/* Input Páginas */}
         <Input
           label="Número de Páginas"
           id="book-pages"
@@ -137,7 +153,6 @@ export function FormLivro({ livroParaEditar, autoresDisponiveis, onSubmit, onCan
           required
         />
 
-        {/* Input Gênero */}
         <Input
           label="Gênero Literário"
           id="book-genre"
@@ -146,7 +161,6 @@ export function FormLivro({ livroParaEditar, autoresDisponiveis, onSubmit, onCan
           onChange={(e) => setGenre(e.target.value)}
         />
 
-        {/* Input Ano de Lançamento */}
         <Input
           label="Ano de Lançamento"
           id="book-year"
@@ -158,7 +172,6 @@ export function FormLivro({ livroParaEditar, autoresDisponiveis, onSubmit, onCan
           max={new Date().getFullYear().toString()}
         />
 
-        {/* TEXTAREA DE SINOPSE */}
         <div className="flex flex-col gap-1.5">
           <label htmlFor="book-synopsis" className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
             Sinopse / Resumo da Obra
@@ -173,7 +186,6 @@ export function FormLivro({ livroParaEditar, autoresDisponiveis, onSubmit, onCan
           />
         </div>
 
-        {/* Botões de Ação */}
         <div className="flex items-center gap-3 pt-2">
           <Button type="submit" isLoading={isSubmitting}>
             {livroParaEditar ? "Salvar Alterações" : "Cadastrar Livro"}
