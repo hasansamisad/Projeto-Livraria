@@ -16,7 +16,6 @@ export function GerenciarLivros() {
   const [livroParaEditar, setLivroParaEditar] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-
   useEffect(() => {
     async function carregarDadosPainel() {
       try {
@@ -58,17 +57,18 @@ export function GerenciarLivros() {
       setIsSubmitting(true);
 
       // 1. Separar o arquivo de imagem dos dados textuais do formulário para a primeira requisição
-    const imagemCapa = dadosForm.get("bookCover"); // Captura o arquivo que colocamos no FormData lá no FormLivro
+      const imagemCapa = dadosForm.get("bookCover"); // Captura o arquivo que colocamos no FormData lá no FormLivro
 
-    const dadosLivro = {
-      title: dadosForm.get("title"),
-      genre: dadosForm.get("genre"),
-      release_year: dadosForm.get("release_year"),
-      author_id: dadosForm.get("author_id"),
-      pages: dadosForm.get("pages"),
-    };
+      const dadosLivro = {
+        title: dadosForm.get("title"),
+        genre: dadosForm.get("genre"),
+        release_year: dadosForm.get("release_year"),
+        author_id: dadosForm.get("author_id"),
+        pages: dadosForm.get("pages"),
+        synopsis: dadosForm.get("synopsis"), 
+      };
 
-    let livroId = livroParaEditar?.id;
+      let livroId = livroParaEditar?.id;
 
       if (livroParaEditar) {
         // Editar livro existente: PUT /books/:id
@@ -98,16 +98,16 @@ export function GerenciarLivros() {
       setLivroParaEditar(null);
       recarregarTabela();
     } catch (err) {
-     const errosDoBackend = err.response?.data?.errors;
-    const msg = errosDoBackend && errosDoBackend.length > 0
-      ? errosDoBackend[0]
-      : err.response?.data?.error || "Erro ao salvar os dados do livro.";
+      const errosDoBackend = err.response?.data?.errors;
+      const msg = errosDoBackend && errosDoBackend.length > 0
+        ? errosDoBackend[0]
+        : err.response?.data?.error || "Erro ao salvar os dados do livro.";
 
-    toast.error(`${msg}`);
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+      toast.error(`${msg}`);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleDeletarClick = async (id) => {
     if (!window.confirm("Tem certeza que deseja remover este livro do acervo?")) {
@@ -135,10 +135,9 @@ export function GerenciarLivros() {
     { 
       label: "Autor", 
       key: "author_id",
-      // Como o Sequelize devolve o objeto do Autor associado, podemos renderizar o nome dele diretamente
       render: (livro) => livro.Author?.name || "Autor não vinculado"
     },
-    { label: "Género", key: "genre" },
+    { label: "Gênero", key: "genre" },
     { 
       label: "Ano", 
       key: "release_year",

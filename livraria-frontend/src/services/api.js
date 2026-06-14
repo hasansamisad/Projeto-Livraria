@@ -1,6 +1,6 @@
 import axios from 'axios';
 
 export const api = axios.create({
-  // URL do seu container backend mapeado no Docker para a máquina local
-  baseURL: 'http://localhost:3001', 
+  // Tenta ler a variável da nuvem/env; se não existir, usa o localhost
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3001',
 });

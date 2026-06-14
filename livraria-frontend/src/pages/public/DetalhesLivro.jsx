@@ -2,33 +2,40 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { api } from "../../services/api";
 import { toast } from "react-toastify";
-
 import { useSelector, useDispatch } from "react-redux";
 import { toggleFavorite, toggleRead } from "../../store/userPreferencesSlice";
+import { CardLivro } from "../../components/ui/CardLivro"; 
 
 export function DetalhesLivro() {
   const { id } = useParams();
   const [book, setBook] = useState(null);
+  const [relatedGenre, setRelatedGenre] = useState([]); 
+  const [relatedAuthor, setRelatedAuthor] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-const favoritos = useSelector((state) => state.preferences?.favorites || []);
-const lidos = useSelector((state) => state.preferences?.readBooks || []);
+  const favoritos = useSelector((state) => state.preferences?.favorites || []);
+  const lidos = useSelector((state) => state.preferences?.readBooks || []);
 
-const isFavorite = book ? favoritos.includes(book.id) : false;
+  const isFavorite = book ? favoritos.includes(book.id) : false;
   const isRead = book ? lidos.includes(book.id) : false;
 
- useEffect(() => {
+  useEffect(() => {
     async function fetchBookDetails() {
       try {
         setLoading(true);
         setError("");
         const response = await api.get(`/books/${id}`);
-        setBook(response.data);
+        const { book, relatedGenre, relatedAuthor } = response.data; 
+        setBook(book);
+        setRelatedGenre(relatedGenre || []);
+        setRelatedAuthor(relatedAuthor || []); 
       } catch (err) {
-        const serverMessage = err.response?.data?.error || "Erro ao carregar detalhes do livro";
+        const serverMessage = err.response?.data?.error 
+          || "Erro ao carregar detalhes do livro";
+          console.error("Erro ao buscar detalhes do livro:", err);
         setError(serverMessage);
         toast.error(serverMessage);
       } finally {
@@ -38,18 +45,16 @@ const isFavorite = book ? favoritos.includes(book.id) : false;
     fetchBookDetails();
   }, [id]);
 
-  //  Função para Alternar o Status de Leitura
   const handleToggleRead = () => {
     if (!book) return;
-
     dispatch(toggleRead(book.id));
     toast.success(isRead ? "Livro marcado como não lido." : "Livro marcado como lido!");
   };
 
-    const handleToggleFavorite = () => {
+  const handleToggleFavorite = () => {
     if (!book) return;
     dispatch(toggleFavorite(book.id));
-    toast.success(isFavorite ? "Removido dos favoritos." : "Adicionado os favoritos!");
+    toast.success(isFavorite ? "Removido dos favoritos." : "Adicionado aos favoritos!");
   };
 
   if (loading) {
@@ -78,133 +83,177 @@ const isFavorite = book ? favoritos.includes(book.id) : false;
     : null;
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-5xl mx-auto">
+    <div className="min-h-screen bg-slate-900 text-slate-100 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto space-y-10">
         
-        {/* Botão de voltar */}
-        <Link to="/" className="inline-flex items-center text-sm text-indigo-400 hover:text-indigo-300 mb-8 transition-colors">
-          ← Voltar para o Catálogo
-        </Link>
+        {/* Breadcrumb / Navegação superior igual à imagem */}
+        <div className="flex items-center space-x-2 text-xs text-slate-400">
+          <Link to="/" className="hover:text-indigo-400 transition-colors">Início</Link>
+          <span>&gt;</span>
+          <span className="hover:text-indigo-400 transition-colors truncate max-w-[120px]">
+            {book.Author?.name || "Autor"}
+          </span>
+          <span>&gt;</span>
+          <span className="text-slate-200 font-medium truncate max-w-[180px]">{book.title}</span>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 bg-slate-800 rounded-2xl p-8 shadow-2xl border border-slate-700">
-          
-          {/* Coluna da Esquerda: Capa do Livro */}
-          <div className="flex justify-center items-center bg-slate-900 rounded-xl p-4 border border-slate-700 shadow-inner">
-            {capaUrl ? (
-              <img 
-                src={capaUrl} 
-                alt={`Capa do livro ${book.title}`} 
-                className="max-h-[450px] w-auto object-contain rounded-lg shadow-lg transform hover:scale-102 transition-transform duration-300"
-              />
-            ) : (
-              <div className="h-[400px] w-[280px] bg-slate-700 rounded-lg flex flex-col items-center justify-center text-slate-400 text-sm italic p-4 text-center">
-                <span className="text-3xl mb-2">📖</span>
-                Sem capa cadastrada
+        {/* Card Principal de Detalhes */}
+        <div className="bg-slate-800 rounded-2xl p-6 md:p-10 shadow-2xl border border-slate-700/50">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+            
+            {/* LADO ESQUERDO: Capa do Livro (Ocupa 4 colunas no desktop) */}
+            <div className="lg:col-span-4 flex justify-center items-start">
+              <div className="bg-slate-900/40 rounded-2xl p-4 border border-slate-700/30 shadow-inner w-full flex justify-center max-w-[340px] lg:max-w-full">
+                {capaUrl ? (
+                  <img 
+                    src={capaUrl} 
+                    alt={`Capa do livro ${book.title}`} 
+                    className="w-full h-auto max-h-[480px] object-contain rounded-xl shadow-2xl"
+                  />
+                ) : (
+                  <div className="aspect-[3/4] w-full bg-slate-700/40 rounded-xl flex flex-col items-center justify-center text-slate-400 text-sm italic p-4">
+                    <span className="text-5xl mb-3">📖</span>
+                    Sem capa cadastrada
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-
-          {/* Coluna da Direita: Informações Reais do seu Sequelize */}
-          <div className="flex flex-col justify-between">
-            <div className="space-y-4">
-              <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
-                  {book.genre || "Gênero não especificado"}
-                </span>
-                <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-3">
-                  {book.title}
-                </h1>
-              </div>
-
-              {/* Informações Físicas do Livro */}
-              <div className="text-sm text-slate-400">
-                <p><span className="font-semibold text-slate-300">Páginas:</span> {book.pages || "Não informado"}</p>
-              </div>
-
-              <hr className="border-slate-700" />
-
-              {/* Ficha Técnica do Autor */}
-              {book.Author ? (
-                <div className="bg-slate-900/40 border border-slate-700/60 rounded-xl p-4 space-y-2">
-                  <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                    Sobre o Autor
-                  </h2>
-                  <p className="text-lg font-bold text-white">
-                    {book.Author.name}
-                  </p>
-                  <p className="text-sm text-slate-300">
-                    <span className="text-slate-400">Nacionalidade:</span> {book.Author.nationality || "Não informada"}
-                  </p>
-                  {book.Author.birth_date && (
-                    <p className="text-sm text-slate-300">
-                      <span className="text-slate-400">Nascimento:</span> {
-                        new Date(book.Author.birth_date + "T00:00:00").toLocaleDateString('pt-BR')
-                      }
-                    </p>
-                  )}
-                </div>
-              ) : (
-                <p className="text-sm text-slate-400 italic">
-                  Informações do autor não atreladas a esse livro no backend.
-                </p>
-              )}
             </div>
 
-            {/* Ações Disponíveis */}
-            <div className="pt-8 md:pt-0 flex items-center gap-4 w-full">
-              
-              {/* Botão de Status de Leitura Dinâmico */}
-              <div className="flex-grow">
-                {isRead ? (
+            {/* LADO DIREITO: Informações detalhadas (Ocupa 8 colunas no desktop) */}
+            <div className="lg:col-span-8 flex flex-col justify-between space-y-6">
+              <div className="space-y-6">
+                
+                {/* Título e Autor */}
+                <div>
+                  <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                    {book.title}
+                  </h1>
+                  <p className="text-indigo-400 font-medium text-base mt-2 hover:underline inline-block cursor-pointer">
+                    {book.Author?.name || "Autor Desconhecido"}
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1 flex items-center gap-1">
+                    <span>👁️</span> 313 visualizações
+                  </p>
+                </div>
+
+                {/* Sobre a Obra (Sinopse) */}
+                <div className="space-y-2">
+                  <h2 className="text-sm font-bold uppercase tracking-wider text-slate-400">
+                    Sobre a obra
+                  </h2>
+                  <p className="text-sm text-slate-300 leading-relaxed text-justify whitespace-pre-line">
+                    {book.synopsis || "Sinopse não disponível para este livro."}
+                  </p>
+                </div>
+
+                {/* Botões de Ação Principais */}
+                <div className="flex flex-wrap items-center gap-3 pt-2">
                   <button
                     type="button"
                     onClick={handleToggleRead}
-                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 px-5 py-3 text-sm font-semibold transition-all duration-200 shadow-md cursor-pointer hover:bg-emerald-600/30"
+                    className={`inline-flex items-center justify-center gap-2 rounded-xl px-8 py-3 text-sm font-bold transition-all duration-200 shadow-lg cursor-pointer border md:w-auto w-full ${
+                      isRead 
+                        ? "bg-emerald-600 hover:bg-emerald-500 text-white border-transparent"
+                        : "bg-indigo-600 hover:bg-indigo-500 text-white border-transparent"
+                    }`}
                   >
-                    <span className="text-base">✓</span> Lido
+                    {isRead ? "✓ Lido" : "Emprestar / Ler"}
                   </button>
-                ) : (
-                  <button 
-                    type="button" 
-                    onClick={handleToggleRead}
-                    className="w-full inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-500 active:scale-[0.98] transition-all duration-200 shadow-lg shadow-indigo-600/20 cursor-pointer border border-transparent"
+
+                  {/* Botão de Curtida / Favorito */}
+                  <button
+                    type="button"
+                    onClick={handleToggleFavorite}
+                    className={`inline-flex items-center gap-2 px-4 py-3 text-xs font-bold rounded-xl border transition-all duration-200 cursor-pointer ${
+                      isFavorite
+                        ? "bg-rose-500/10 border-rose-500/30 text-rose-400 shadow-md"
+                        : "bg-slate-900/40 border-slate-700 text-slate-400 hover:text-slate-200"
+                    }`}
                   >
-                    Marcar como Lido
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill={isFavorite ? "currentColor" : "none"}
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      className="w-4 h-4"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                    </svg>
+                    <span>17 curtidas</span>
                   </button>
-                )}
+                </div>
+
+                {/* Gênero / Badge */}
+                <div className="pt-2">
+                  <span className="text-xs font-bold text-indigo-400 bg-indigo-500/10 px-3 py-1.5 rounded-md border border-indigo-500/20 uppercase tracking-wider">
+                     {book.genre || "Clássicos"}
+                  </span>
+                </div>
+
               </div>
 
-              {/* Botão de Favorito (Coração Reativo) */}
-              <button
-                type="button"
-                onClick={handleToggleFavorite}
-                className={`p-3 h-[46px] w-[46px] rounded-xl border transition-all duration-300 cursor-pointer flex items-center justify-center flex-shrink-0 ${
-                  isFavorite
-                    ? "bg-rose-500/20 border-rose-500/40 text-rose-400 scale-105 shadow-md shadow-rose-500/10"
-                    : "bg-slate-900/60 border-slate-700 text-slate-400 hover:text-slate-200 hover:border-slate-600"
-                }`}
-                title={isFavorite ? "Remover dos favoritos" : "Favoritar livro"}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill={isFavorite ? "currentColor" : "none"}
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  className="w-5 h-5 transition-transform duration-200 active:scale-75"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-                  />
-                </svg>
-              </button>
+              {/* Grid de Metadados Rodapé (Ficha Técnica Horizontal) */}
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 pt-6 border-t border-slate-700/60 text-xs text-slate-400">
+                <div className="space-y-1">
+                  <span className="block text-[10px] uppercase font-bold tracking-wider text-slate-500">ISBN</span>
+                  <p className="font-semibold text-slate-200 truncate">𝄃𝄃𝄂𝄂𝄀𝄁 9786584542211</p>
+                </div>
+                <div className="space-y-1">
+                  <span className="block text-[10px] uppercase font-bold tracking-wider text-slate-500">Editora</span>
+                  <p className="font-semibold text-slate-200 truncate"> Pop Stories</p>
+                </div>
+                <div className="space-y-1">
+                  <span className="block text-[10px] uppercase font-bold tracking-wider text-slate-500">Publicação</span>
+                  <p className="font-semibold text-slate-200">01/05/2022</p>
+                </div>
+                <div className="space-y-1">
+                  <span className="block text-[10px] uppercase font-bold tracking-wider text-slate-500">Páginas</span>
+                  <p className="font-semibold text-slate-200">{book.pages || "N/A"}</p>
+                </div>
+                <div className="space-y-1">
+                  <span className="block text-[10px] uppercase font-bold tracking-wider text-slate-500">Idioma</span>
+                  <p className="font-semibold text-slate-200">Português</p>
+                </div>
+              </div>
 
             </div>
-
           </div>
         </div>
+
+        {/* SEÇÕES DE LIVROS RELACIONADOS */}
+
+        {/* Seção 1: Títulos do Mesmo Autor */}
+        {relatedAuthor && relatedAuthor.length > 0 && (
+          <div className="space-y-6 pt-4">
+            <div className="pb-1">
+              <h2 className="text-2xl font-bold text-white tracking-tight">
+                Títulos do mesmo autor
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5 animate-fadeIn">
+              {relatedAuthor.map((relBook) => (
+                <CardLivro key={relBook.id} book={relBook} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Seção 2: Títulos Semelhantes (Mesmo Gênero) */}
+        {relatedGenre && relatedGenre.length > 0 && (
+          <div className="space-y-6 pt-4">
+            <div className="pb-1">
+              <h2 className="text-2xl font-bold text-white tracking-tight">
+                Títulos semelhantes
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5 animate-fadeIn">
+              {relatedGenre.map((relBook) => (
+                <CardLivro key={relBook.id} book={relBook} />
+              ))}
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

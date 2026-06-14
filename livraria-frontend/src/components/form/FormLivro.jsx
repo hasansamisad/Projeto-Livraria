@@ -6,20 +6,22 @@ import PropTypes from "prop-types";
 export function FormLivro({ livroParaEditar, autoresDisponiveis, onSubmit, onCancelar, isSubmitting }) {
   const [title, setTitle] = useState(livroParaEditar?.title || "");
   const [genre, setGenre] = useState(livroParaEditar?.genre || "");
-  const [release_year, setReleaseYear] = useState(livroParaEditar?.release_year || "");
-  const [author_id, setAuthorId] = useState(livroParaEditar?.author_id || "");
+  const [release_year, setReleaseYear] = useState(livroParaEditar?.release_year || livroParaEditar?.releaseYear || "");
+  const [author_id, setAuthorId] = useState(livroParaEditar?.author_id || livroParaEditar?.authorId || "");
   const [pages, setPages] = useState(livroParaEditar?.pages || "");
   const [bookCover, setBookCover] = useState(livroParaEditar?.cover_url || "");
+  const [synopsis, setSynopsis] = useState(livroParaEditar?.synopsis || "");
   const [error, setError] = useState("");
 
   const handleFileChange = (e) => {
-    if(e.target.files && e.target.files[0]) {
+    if (e.target.files && e.target.files[0]) {
       setBookCover(e.target.files[0]);
     }
-  }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setError(""); // Limpa erros anteriores antes de validar
 
     // Validações simples de segurança no Front-end
     if (title.trim().length < 2) {
@@ -32,25 +34,25 @@ export function FormLivro({ livroParaEditar, autoresDisponiveis, onSubmit, onCan
       return;
     }
 
-    if(!pages || parseInt(pages, 10) <= 0) {
+    if (!pages || parseInt(pages, 10) <= 0) {
       setError("O número de páginas deve ser um valor positivo.");
       return;
     }
 
-    /*
-      O Axios é inteligente: quando você passa um objeto FormData como o corpo da requisição, ele automaticamente define o Content-Type como multipart/form-data e monta o boundary correto. 
-    */
+    // Criamos o FormData unificado contendo o estado atualizado dos inputs textuais e arquivo
     const formData = new FormData();
     formData.append("title", title);
     formData.append("genre", genre || "Não especificado");
     formData.append("release_year", release_year ? parseInt(release_year, 10) : "");
     formData.append("author_id", parseInt(author_id, 10));
     formData.append("pages", parseInt(pages, 10));
-
-    if(bookCover) {
+    formData.append("synopsis", synopsis); // Envia o estado local da sinopse perfeitamente
+    
+    if (bookCover) {
       formData.append("bookCover", bookCover);
     }
 
+    // Passa o pacote completo com todos os dados digitados para o componente pai salvar
     onSubmit(formData);
   };
 
@@ -60,7 +62,7 @@ export function FormLivro({ livroParaEditar, autoresDisponiveis, onSubmit, onCan
       {/* Topo do Formulário */}
       <div className="mb-6">
         <h3 className="text-xl font-bold text-white">
-          {livroParaEditar ? "✍️ Editar Livro" : "➕ Adicionar Novo Livro"}
+          {livroParaEditar ? " Editar Livro" : " Adicionar Novo Livro"}
         </h3>
         <p className="text-xs text-slate-400 mt-1">
           Preencha a ficha técnica da obra para disponibilizá-la no acervo.
@@ -109,7 +111,8 @@ export function FormLivro({ livroParaEditar, autoresDisponiveis, onSubmit, onCan
           </select>
         </div>
 
-          <div className="flex flex-col gap-1.5">
+        {/* Input de Upload da Capa */}
+        <div className="flex flex-col gap-1.5">
           <label htmlFor="book-cover" className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
             Capa do Livro (.jpg, .png)
           </label>
@@ -122,7 +125,7 @@ export function FormLivro({ livroParaEditar, autoresDisponiveis, onSubmit, onCan
           />
         </div>
 
-
+        {/* Input Páginas */}
         <Input
           label="Número de Páginas"
           id="book-pages"
@@ -134,9 +137,9 @@ export function FormLivro({ livroParaEditar, autoresDisponiveis, onSubmit, onCan
           required
         />
 
-        {/* Input Género */}
+        {/* Input Gênero */}
         <Input
-          label="Género Literário"
+          label="Gênero Literário"
           id="book-genre"
           placeholder="Ex: Romance, Ficção Científica, Drama"
           value={genre}
@@ -154,6 +157,21 @@ export function FormLivro({ livroParaEditar, autoresDisponiveis, onSubmit, onCan
           min="1"
           max={new Date().getFullYear().toString()}
         />
+
+        {/* TEXTAREA DE SINOPSE */}
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="book-synopsis" className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            Sinopse / Resumo da Obra
+          </label>
+          <textarea
+            id="book-synopsis"
+            rows="4"
+            placeholder="Digite uma breve sinopse ou resumo marcante sobre a história do livro..."
+            value={synopsis}
+            onChange={(e) => setSynopsis(e.target.value)}
+            className="w-full rounded-xl border border-slate-800 bg-slate-900 px-4 py-3 text-sm text-slate-200 placeholder-slate-500 shadow-xs outline-hidden transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 resize-y min-h-[100px]"
+          />
+        </div>
 
         {/* Botões de Ação */}
         <div className="flex items-center gap-3 pt-2">

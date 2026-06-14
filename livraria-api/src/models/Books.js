@@ -18,6 +18,17 @@ export default class Book extends Model {
         type: Sequelize.STRING,
         defaultValue: '',
       },
+      synopsis: {
+        type: Sequelize.TEXT,
+        defaultValue: '',
+      },
+      release_year: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        validate: {
+          isInt: { msg: 'Ano de lançamento deve ser um número inteiro.' },
+        },
+      },
     }, {
       sequelize,
       tableName: 'books',
@@ -26,8 +37,8 @@ export default class Book extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.Author, { foreignKey: 'author_id' }); // Relacionamento com Autor
-    this.hasMany(models.BookCover, { foreignKey: 'book_id' }); // Um livro pode ter capas
+    this.belongsTo(models.Author, { foreignKey: 'author_id' });
+    this.hasMany(models.BookCover, { foreignKey: 'book_id' });
     this.belongsTo(models.User, { foreignKey: 'user_id' });
   }
 }

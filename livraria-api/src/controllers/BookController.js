@@ -97,39 +97,30 @@ class BookController {
   async update(req, res) {
     try {
       const { id } = req.params;
-
-      if (!id) {
-        return res.status(400).json({
-          errors: ['Id is required'],
-        });
-      }
-
       const book = await Book.findByPk(id);
 
       if (!book) {
-        return res.status(400).json({
-          errors: ['No book found'],
-        });
+        return res.status(404).json({ errors: ['Livro não encontrado'] });
       }
 
-      if (book.user_id !== req.userId) {
-        return res.status(401).json({
-          errors: ['Você não tem permissão para editar um livro que não cadastrou.'],
-        });
-      }
-      const bookAtualizado = await book.update(req.body);
+      // 1. Certifique-se de pegar a synopsis do req.body!
       const {
-        title, pages, genre, author_id,
-      } = bookAtualizado;
+        title, genre, release_year, author_id, pages, synopsis,
+      } = req.body;
 
-      return res.json({
-        title, pages, genre, author_id,
+      // 2. Atualize incluindo a synopsis
+      await book.update({
+        title,
+        genre,
+        release_year,
+        author_id,
+        pages,
+        synopsis,
       });
+
+      return res.json(book);
     } catch (e) {
-      console.log(e);
-      return res.status(400).json({
-        errors: e.errors ? e.errors.map((err) => err.message) : ['Update failed'],
-      });
+      return res.status(400).json({ errors: ['Erro ao atualizar livro'] });
     }
   }
 
@@ -138,7 +129,7 @@ class BookController {
       const { id } = req.params;
 
       const book = await Book.findByPk(id, {
-        attributes: ['id', 'title', 'pages', 'genre'],
+        attributes: ['id', 'title', 'pages', 'genre', 'author_id', 'synopsis'],
         include: [
           {
             model: Author,
@@ -152,12 +143,30 @@ class BookController {
       });
 
       if (!book) {
-        return res.status(400).json({
+        return res.status(404).json({
           errors: ['Livro não encontrado'],
         });
       }
 
-      return res.json(book);
+      const relatedGenre = await Book.findAll({
+        where: {
+          genre: book.genre,
+          id: { [Op.ne]: book.id }, // Exclui o livro atual dos relacionados
+        },
+        limit: 4,
+        include: [{ model: BookCover, attributes: ['url', 'filename', 'originalname'] }],
+      });
+
+      const relatedAuthor = await Book.findAll({
+        where: {
+          author_id: book.author_id,
+          id: { [Op.ne]: book.id }, // Exclui o livro atual dos relacionados
+        },
+        limit: 4,
+        include: [{ model: BookCover, attributes: ['url', 'filename', 'originalname'] }],
+      });
+
+      return res.json({ book, relatedGenre, relatedAuthor });
     } catch (e) {
       return res.status(400).json({
         errors: e.errors ? e.errors.map((err) => err.message) : ['Erro ao buscar o livro'],
