@@ -56,8 +56,9 @@ export function GerenciarLivros() {
     try {
       setIsSubmitting(true);
 
-      // 1. Separar o arquivo de imagem dos dados textuais do formulário para a primeira requisição
-      const imagemCapa = dadosForm.get("bookCover"); // Captura o arquivo que colocamos no FormData lá no FormLivro
+      // 1. Capturar as novas chaves vindas do FormLivro
+      const imagemCapa = dadosForm.get("cover"); 
+      const urlExterna = dadosForm.get("url_externa"); // Captura o link de texto, se houver
 
       const dadosLivro = {
         title: dadosForm.get("title"),
@@ -77,16 +78,21 @@ export function GerenciarLivros() {
       } else {
         // Criar novo livro: POST /books
         const response = await api.post("/books", dadosLivro);
-        livroId = response.data.id; // Captura o ID do livro recém-criado para enviar a capa
+        livroId = response.data.id; // Captura o ID do livro criado
         toast.success("Livro cadastrado com sucesso!");
       }
 
-      // 2. Se houver uma imagem de capa, enviar em uma requisição separada para o endpoint de upload de capa
-      if(imagemCapa && livroId) {
+      // 2. Se o usuário enviou uma Capa (Física OU via Link da Web), faz a segunda requisição
+      if ((imagemCapa || urlExterna) && livroId) {
         const coverFormData = new FormData();
-        coverFormData.append("cover", imagemCapa); // O nome "cover" deve bater com o que o backend espera
-        coverFormData.append("book_id", livroId); // Passamos o ID do livro para associar a capa
+        coverFormData.append("book_id", livroId); // Vincula o ID do livro
 
+        if (imagemCapa) {
+          coverFormData.append("cover", imagemCapa); // Se for arquivo, anexa a imagem física
+        } else if (urlExterna) {
+          coverFormData.append("url_externa", urlExterna); // Se for link, envia o texto da URL
+        }
+        
         await api.post("/covers", coverFormData, {
           headers: {
             "Content-Type": "multipart/form-data",

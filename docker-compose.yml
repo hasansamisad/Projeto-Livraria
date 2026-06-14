@@ -31,6 +31,8 @@ services:
     # MÁGICA AQUI: Aponta para o .env dentro da pasta do backend
     env_file:
       - ./livraria-api/.env
+    environment:
+      DATABASE_HOST: database
     volumes:
       - ./livraria-api:/usr/app
       - /usr/app/node_modules
@@ -52,6 +54,8 @@ services:
     # MÁGICA AQUI: Já deixei preparado para quando você criar o .env do frontend
     env_file:
       - ./livraria-frontend/.env
+    environment:
+      - VITE_API_URL=http://localhost:3001
     volumes:
       - ./livraria-frontend:/usr/app
       - /usr/app/node_modules
