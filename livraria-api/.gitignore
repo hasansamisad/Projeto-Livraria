@@ -1,4 +1,6 @@
 node_modules
 .env
-/uploads/
-uploads/images/
+# Ignora todas as imagens reais que você cadastrar (para não poluir o GitHub de fotos de teste)
+uploads/images/*
+# Abre uma exceção explícita para o arquivo .gitkeep não ser ignorado
+!uploads/images/.gitkeep
