@@ -1,37 +1,46 @@
-# Livraria Full Stack
+# 📚 Sami Books - Livraria Full Stack
 
-Uma aplicação web completa para gerenciamento de catálogo de livros, controle de leituras e persistência de preferências do usuário. O projeto foi desenvolvido utilizando uma arquitetura robusta dividida em um backend em Node.js com banco de dados relacional e um frontend reativo moderno, totalmente integrados através de contêineres Docker.
+Uma aplicação web completa para gerenciamento de catálogo de livros, controle de acervo e gerenciamento administrativo. O projeto foi desenvolvido utilizando uma arquitetura robusta dividida em uma API backend em Node.js com banco de dados relacional e um frontend reativo moderno, totalmente integrados através de contêineres Docker e implantados em nuvem com esteiras automatizadas de CI/CD.
 
 ---
 
-## Tecnologias Utilizadas
+## 🖥️ Demonstração do Ecossistema
+
+![Interface Principal do Acervo - Sami Books](https://raw.githubusercontent.com/hasansamisad/Projeto-Livraria/main/livraria-frontend/public/screenshot.png)
+*(Dica: Faça o upload da sua imagem image_91fdc2.png para a pasta public do seu repositório frontend e ajuste o link acima, ou use a URL direta do GitHub)*
+
+---
+
+## 🛠️ Tecnologias Utilizadas
 
 ### Frontend
-* **React.js & Vite:** Estrutura ágil para renderização e SPA (Single Page Application).
-* **Redux Toolkit (RTK):** Gerenciamento de estado global centralizado e reativo para controle de livros favoritos e lidos.
-* **React Router Dom:** Gerenciamento avançado de rotas dinâmicas e navegação interna.
-* **Tailwind CSS:** Estilização utilitária moderna com suporte nativo a temas escuros.
-* **React Toastify:** Notificações profissionais e alertas síncronos na interface do usuário.
+* **React.js & Vite:** Estrutura ágil para renderização otimizada e SPA (Single Page Application).
+* **React Router Dom:** Gerenciamento avançado de rotas dinâmicas, navegação interna e proteção de rotas privadas.
+* **Tailwind CSS:** Estilização utilitária moderna com interface totalmente responsiva em modo escuro.
+* **React Toastify:** Notificações síncronas em tempo real e alertas visuais profissionais para a experiência do usuário.
 
 ### Backend & Banco de Dados
-* **Node.js & Express:** API RESTful escalável para gerenciamento das regras de negócio.
-* **Sequelize (ORM):** Abstração de queries e mapeamento de dados relacional para tabelas de Livros, Autores e Capas.
-* **MySQL / PostgreSQL:** Armazenamento seguro de dados com relacionamentos complexos.
+* **Node.js & Express:** API RESTful escalável orientada a objetos para o processamento das regras de negócio.
+* **Sequelize (ORM):** Abstração de queries e mapeamento de dados relacional para tabelas integradas.
+* **PostgreSQL / MySQL:** Armazenamento robusto e seguro com aplicação rigorosa de integridade referencial.
 
-### Infraestrutura & Ferramentas
-* **Docker & Docker Compose:** Containerização de todo o ecossistema (Frontend, Backend e Banco de Dados) para garantir consistência em ambientes de desenvolvimento e produção.
-
----
-
-## Arquitetura e Funcionalidades Principais
-
-* **Gerenciamento de Estado Centralizado (Single Source of Truth):** Uso do Redux Toolkit para acompanhar se um livro foi marcado como "Lido" ou adicionado aos "Favoritos". A store sincroniza os dados síncronamente na memória RAM para reatividade instantânea entre componentes (`HomeCatalogo`, `CardLivro` e `DetalhesLivro`) e persiste as informações no `localStorage`.
-* **Consumo de API Dinâmico:** Telas de detalhes isoladas alimentadas via hooks e carregamento assíncrono baseado em parâmetros de rota (`useParams`).
-* **Infraestrutura Pronta para Escalar:** Configuração automatizada via Multi-Container Docker, permitindo subir o banco de dados e os serviços web isolados com apenas um comando.
+### Infraestrutura, DevOps & Ferramentas
+* **Docker & Docker Compose:** Containerização de todo o ecossistema (Frontend, Backend e Banco) para garantir paridade total entre os ambientes de desenvolvimento e produção.
+* **Esteira de CI/CD & Deploy:** Deploy automatizado e híbrido, utilizando a **Vercel** para ambientes de Preview do Frontend e a plataforma **Render** para a hospedagem da API Backend.
+* **Insomnia:** Ambiente técnico utilizado para validação, automação de testes de endpoints e documentação de payloads da API.
 
 ---
 
-##  Como Executar o Projeto
+## 🛡️ Arquitetura e Regras de Negócio Implementadas
+
+* **Autenticação & Rotas Privadas:** O acervo de livros e autores é público para leitura de visitantes. No entanto, as operações de escrita e modificação exigem autenticação via token, liberando um painel administrativo protegido.
+* **Segurança Dinâmica no CRUD:** Para garantir a integridade da aplicação, o ecossistema backend valida a propriedade dos registros, impedindo terminantemente que um usuário autenticado delete ou altere livros cadastrados por outra pessoa.
+* **Integridade Referencial do Banco:** O banco de dados foi modelado com restrições rígidas que bloqueiam a exclusão de qualquer autor que possua livros vinculados ao seu nome, blindando a persistência contra registros órfãos.
+* **Gerenciamento Ágil do Ciclo de Vida:** O planejamento, mapeamento de features, abertura de Issues e o controle de fluxo de ramificação de código (Git Flow) foram gerenciados de ponta a ponta utilizando o **GitHub Projects**.
+
+---
+
+## ⚙️ Como Executar o Projeto Localmente
 
 Certifique-se de ter o **Docker** e o **Docker Compose** instalados em sua máquina.
 
@@ -41,41 +50,38 @@ git clone [https://github.com/hasansamisad/Projeto-Livraria.git](https://github.
 cd Projeto-Livraria
 ```
 
-## Configurar Variáveis de Ambiente
+### 2. Configurar Variáveis de Ambiente
+Verifique e configure os arquivos *.env* dentro das pastas *livraria-frontend* e *livraria-api* com suas credenciais locais (Portas, chaves de autenticação e strings de conexões de banco).
 
-Verifique e configure os arquivos .env dentro das pastas livraria-frontend e livraria-api com suas credenciais locais (Portas, chaves de API e conexões de banco).
+### 3. Subir a Aplicação com Docker
+Na raiz do projeto (onde está o arquivo *docker-compose.yml*), execute o comando abaixo para construir as imagens e iniciar todos os serviços isolados em segundo plano:
 
-## Subir a Aplicação com Docker
+### 4. Acessar a Aplicação
+Assim que o Docker inicializar os containers com sucesso, os serviços estarão disponíveis em:
 
-Na raiz do projeto (onde está o arquivo docker-compose.yml), execute o comando abaixo para construir as imagens e iniciar os serviços em segundo plano:
+* *Frontend:* http://localhost:5173
 
-```bash
-docker compose up -d --build
-```
-
-## Acessar a Aplicação
-
-Assim que o Docker inicializar os serviços, as plataformas estarão disponíveis em:
-
-* **Frontend:** http://localhost:5173
-
-* **API Backend:** http://localhost:3000
+* *API Backend:* http://localhost:3000
 
 ## 📂 Estrutura do Repositório
 
-```text
-├── livraria-api/          # Servidor Node.js, Sequelize ORM e Models (Backend)
-├── livraria-frontend/     # Aplicação React, Redux Store e Componentes Tailwind (Frontend)
+```Plaintext
+├── livraria-api/          # Servidor Node.js, Sequelize ORM, Models e Validações (Backend)
+├── livraria-frontend/     # Aplicação React, Componentes Reativos e Tailwind CSS (Frontend)
 │   ├── src/
-│   │   ├── components/    # Elementos de UI isolados (CardLivro, TabelaDados)
-│   │   ├── pages/         # Telas da aplicação (HomeCatalogo, DetalhesLivro, Login)
-│   │   ├── store/         # Configuração central do Redux Toolkit (Slices e Store)
-│   │   └── routes/        # Arquitetura de rotas do React Router Dom
-└── docker-compose.yml     # Orquestração dos containers de desenvolvimento
+│   │   ├── components/    # Elementos de UI isolados e reutilizáveis (CardLivro, TabelaDados)
+│   │   ├── pages/         # Telas da aplicação (HomeCatalogo, DetalhesLivro, LoginPainel)
+│   │   └── routes/        # Arquitetura e guardas de segurança do React Router Dom
+└── docker-compose.yml     # Orquestração multi-container de desenvolvimento
 ```
 
 ## Autor
+*Hasan Sami Sad*
 
-Desenvolvido por Hasan Sami Sad
+Graduando em Ciência da Computação pela UDF (3º Semestre).
 
-Estudante de Ciência da Computação e Desenvolvedor Full Stack focado na construção de aplicações escaláveis e modernas.
+Desenvolvedor Full Stack focado no ecossistema JavaScript/TypeScript, arquiteturas de software conteinerizadas e engenharia de software ágil.
+
+* *LinkedIn:* [https://www.linkedin.com/in/hasan-computer-scientist/]
+
+* GitHub: https://github.com/hasansamisad
