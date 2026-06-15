@@ -6,8 +6,7 @@ Uma aplicação web completa para gerenciamento de catálogo de livros, controle
 
 ## 🖥️ Demonstração do Ecossistema
 
-![Interface Principal do Acervo - Sami Books](https://raw.githubusercontent.com/hasansamisad/Projeto-Livraria/main/livraria-frontend/public/screenshot.png)
-*(Dica: Faça o upload da sua imagem image_91fdc2.png para a pasta public do seu repositório frontend e ajuste o link acima, ou use a URL direta do GitHub)*
+![Interface Principal do Acervo - Sami Books](https://github.com/user-attachments/assets/ab349b6f-e4b9-4ecd-a4ce-550e8510dd31)
 
 ---
 
