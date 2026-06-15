@@ -77,7 +77,7 @@ Assim que o Docker inicializar os containers com sucesso, os serviços estarão 
 ## Autor
 *Hasan Sami Sad*
 
-Graduando em Ciência da Computação pela UDF (3º Semestre).
+Graduando em Ciência da Computação pela UDF .
 
 Desenvolvedor Full Stack focado no ecossistema JavaScript/TypeScript, arquiteturas de software conteinerizadas e engenharia de software ágil.
 
