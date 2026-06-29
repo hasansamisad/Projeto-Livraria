@@ -21,7 +21,6 @@ export function PerfilUsuario() {
         setLoading(true);
         const response = await api.get("/user/profile");
         
-        // Ajuste os campos caso o seu model use 'nome' em vez de 'name'
         setNome(response.data.name || "");
         setEmail(response.data.email || "");
       } catch  {
