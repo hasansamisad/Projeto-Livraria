@@ -49,7 +49,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext value={{ 
-      isAuthenticated: !!user, 
+      isAuthenticated: !!user, // Força a ter um valor booleano, mesmo que user seja null ou undefined
       user, 
       loading, 
       login, 
