@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 
-export function Pagina404() {
+export function Page404() {
   const navigate = useNavigate();
 
   return (
