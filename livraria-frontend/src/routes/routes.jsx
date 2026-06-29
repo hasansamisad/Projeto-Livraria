@@ -17,6 +17,9 @@ import { GerenciarLivros } from '../pages/admin/GerenciarLivros';
 import { GerenciarAutores } from '../pages/admin/GerenciarAutores';
 import { PerfilUsuario } from '../pages/admin/PerfilUsuario';
 
+// Página 404 
+import { Page404 } from '../pages/Page404';
+
 export const router = createBrowserRouter([
   //  ROTAS PÚBLICAS (Envelopadas pelo Layout do Cliente)
   {
@@ -47,6 +50,11 @@ export const router = createBrowserRouter([
       // Conta do Usuário
       { path: '/admin/perfil', element: <PerfilUsuario /> },
     ]
+  },  
+
+  {
+    path: '*',
+    element: <Page404 />
   }
     
 ]);
