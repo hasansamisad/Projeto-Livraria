@@ -1,1 +1,25 @@
 @import "tailwindcss";
+
+@theme {
+  --color-app-bg: var(--background);
+  --color-app-surface: var(--surface);
+  --color-app-text: var(--text-main);
+  --color-app-muted: var(--text-muted);
+  --color-app-border: var(--border);
+}
+:root {
+  --background: #f1f5f9;
+  --surface: #ffffff;    
+  --text-main: #0f172a;  
+  --text-muted: #475569;
+  --border: #cbd5e1;     
+}
+
+
+html.dark {
+  --background: #0f172a; /* slate-900 */
+  --surface: #1e293b;    /* slate-800 */
+  --text-main: #f1f5f9;  /* slate-100 */
+  --text-muted: #94a3b8; /* slate-400 */
+  --border: #334155;     /* slate-700 */
+}

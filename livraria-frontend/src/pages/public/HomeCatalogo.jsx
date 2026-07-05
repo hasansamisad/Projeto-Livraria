@@ -98,16 +98,17 @@ export function HomeCatalogo() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 py-12 px-4 sm:px-6 lg:px-8">
+    // 🎨 Ajustado: Fundo e texto base herdam os Design Tokens do tema ativo
+    <div className="min-h-screen bg-app-bg text-app-text py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
       <div className="max-w-7xl mx-auto">
         
         {/* Header Principal do Catálogo */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-800 pb-8 mb-10 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-app-border pb-8 mb-10 gap-4">
           <div>
-            <h1 className="text-4xl font-extrabold text-white tracking-tight">
+            <h1 className="text-4xl font-extrabold tracking-tight">
               Acervo da Livraria
             </h1>
-            <p className="text-sm text-slate-400 mt-2">
+            <p className="text-sm text-app-muted mt-2">
               Explore os livros disponíveis no nosso banco de dados.
             </p>
           </div>
@@ -131,7 +132,7 @@ export function HomeCatalogo() {
         </div>
 
         {/* Seção de Filtros */}
-        
+        {/* 💡 Lembrete: Você precisará abrir o componente <FiltrosCatalogo /> e substituir as cores dele também! */}
         <FiltrosCatalogo 
           search={search}
           selectedGenre={selectedGenre}
@@ -147,7 +148,7 @@ export function HomeCatalogo() {
           <div className="flex justify-center items-center py-20">
             <div className="text-center space-y-3">
               <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-              <p className="text-slate-400 text-sm animate-pulse">Buscando livros no acervo...</p>
+              <p className="text-app-muted text-sm animate-pulse">Buscando livros no acervo...</p>
             </div>
           </div>
         )}
@@ -155,48 +156,46 @@ export function HomeCatalogo() {
         {/* Estado de Erro */}
         {error && !loading && (
           <div className="max-w-xl mx-auto bg-red-500/10 border border-red-500/20 rounded-xl p-4 text-center">
-            <p className="text-sm text-red-400 font-medium">{error}</p>
+            <p className="text-sm text-red-500 dark:text-red-400 font-medium">{error}</p>
           </div>
         )}
 
         {/* Estado de Catálogo Vazio / Sem Resultados nos Filtros */}
         {!loading && !error && books.length === 0 && (
-          <div className="text-center py-16 bg-slate-800/40 rounded-2xl border border-slate-800 border-dashed max-w-2xl mx-auto">
+          <div className="text-center py-16 bg-app-surface border border-app-border border-dashed max-w-2xl mx-auto rounded-2xl transition-colors duration-200">
 
             {search && !selectedGenre && !selectedAuthor && (
               <>
-                <p className="text-slate-400 text-lg font-medium">Nenhum livro encontrado com o título "{search}".</p>
-                <p className="text-slate-500 text-sm mt-1">Verifique a ortografia ou tente buscar por outro termo.</p>
+                <p className="text-app-text text-lg font-medium">Nenhum livro encontrado com o título "{search}".</p>
+                <p className="text-app-muted text-sm mt-1">Verifique a ortografia ou tente buscar por outro termo.</p>
               </>
             )}
 
             {selectedGenre && !selectedAuthor && (
               <>
-                <p className="text-slate-400 text-lg font-medium">Não há nenhum livro associado ao gênero "{selectedGenre}" no momento.</p>
-                <p className="text-slate-500 text-sm mt-1">Explore outras categorias ou remova o filtro para ver todo o acervo.</p>
+                <p className="text-app-text text-lg font-medium">Não há nenhum livro associado ao gênero "{selectedGenre}" no momento.</p>
+                <p className="text-app-muted text-sm mt-1">Explore outras categorias ou remova o filtro para ver todo o acervo.</p>
               </>
             )}
 
             {selectedAuthor && !selectedGenre && (
               <>
-                <p className="text-slate-400 text-lg font-medium">O autor selecionado não possui nenhum livro cadastrado.</p>
-                <p className="text-slate-500 text-sm mt-1">Tente selecionar outro escritor ou limpe os filtros.</p>
+                <p className="text-app-text text-lg font-medium">O autor selecionado não possui nenhum livro cadastrado.</p>
+                <p className="text-app-muted text-sm mt-1">Tente selecionar outro escritor ou limpe os filtros.</p>
               </>
             )}
 
-            {/* Caso o usuário tenha misturado múltiplos filtros e não ache nada */}
             {((selectedGenre && selectedAuthor) || (search && (selectedGenre || selectedAuthor))) && (
               <>
-                <p className="text-slate-400 text-lg font-medium">Nenhum resultado corresponde à combinação de filtros aplicada.</p>
-                <p className="text-slate-500 text-sm mt-1">Tente remover ou alterar alguns dos critérios de busca.</p>
+                <p className="text-app-text text-lg font-medium">Nenhum resultado corresponde à combinação de filtros aplicada.</p>
+                <p className="text-app-muted text-sm mt-1">Tente remover ou alterar alguns dos critérios de busca.</p>
               </>
             )}
 
-            {/* Catálogo totalmente vazio no banco (Sem filtros ativos) */}
             {!search && !selectedGenre && !selectedAuthor && (
               <>
-                <p className="text-slate-400 text-lg font-medium">Nenhum livro cadastrado até o momento.</p>
-                <p className="text-slate-500 text-sm mt-1">Faça login no painel para registrar o primeiro exemplar.</p>
+                <p className="text-app-text text-lg font-medium">Nenhum livro cadastrado até o momento.</p>
+                <p className="text-app-muted text-sm mt-1">Faça login no painel para registrar o primeiro exemplar.</p>
               </>
             )}
           </div>
@@ -205,8 +204,9 @@ export function HomeCatalogo() {
         {/* Grade de Livros */}
         {!loading && books.length > 0 && (
           <div className="space-y-12">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-fadeIn">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {books.map((book) => (
+                /* 💡 Lembrete: Você também precisará atualizar o componente <CardLivro /> para usar as novas variáveis! */
                 <CardLivro key={book.id} book={book} />
               ))}
             </div>
@@ -218,11 +218,11 @@ export function HomeCatalogo() {
                   type="button"
                   onClick={handleLoadMore}
                   disabled={loadingMore}
-                  className="inline-flex items-center justify-center min-w-[200px] rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-indigo-500/50 px-6 py-3.5 text-sm font-semibold text-indigo-400 hover:text-white transition-all duration-200 active:scale-[0.98] shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="inline-flex items-center justify-center min-w-[200px] rounded-xl bg-app-surface hover:bg-app-bg border border-app-border hover:border-indigo-500/50 px-6 py-3.5 text-sm font-semibold text-indigo-500 dark:text-indigo-400 transition-all duration-200 active:scale-[0.98] shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loadingMore ? (
                     <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin"></div>
+                      <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
                       Carregando...
                     </div>
                   ) : (

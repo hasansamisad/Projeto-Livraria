@@ -28,75 +28,79 @@ export function FormAutor({ autorParaEditar, onSubmit, onCancelar, isSubmitting 
   };
 
   return (
-    <div className="bg-slate-850 border border-slate-800 rounded-2xl p-6 shadow-xl max-w-lg mx-auto animate-fadeIn">
-      
-      {/* Título Dinâmico */}
-      <div className="mb-6">
-        <h3 className="text-xl font-bold text-white">
-          {autorParaEditar ? "✍️ Editar Autor" : "➕ Cadastrar Novo Autor"}
-        </h3>
-        <p className="text-xs text-slate-400 mt-1">
-          Preencha a ficha técnica do autor para o banco de dados.
-        </p>
-      </div>
+  // 🎨 Ajustado: O container agora usa bg-app-surface e as bordas dinâmicas do tema ativo
+  <div className="bg-app-surface border border-app-border rounded-2xl p-6 shadow-xl max-w-lg mx-auto animate-fadeIn transition-colors duration-200">
+    
+    {/* Título Dinâmico */}
+    <div className="mb-6">
+      {/* 🎨 Ajustado: text-app-text substitui o text-white estático */}
+      <h3 className="text-xl font-bold text-app-text">
+        {autorParaEditar ? "✍️ Editar Autor" : "➕ Cadastrar Novo Autor"}
+      </h3>
+      <p className="text-xs text-app-muted mt-1">
+        Preencha a ficha técnica do autor para o banco de dados.
+      </p>
+    </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-5">
+      
+      {/* Alerta de erro local se houver */}
+      {error && (
+        <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-3 text-xs text-red-500 dark:text-red-400 font-medium">
+           {error}
+        </div>
+      )}
+
+      {/* Input Nome */}
+      {/* 💡 Seus inputs filhos já vão herdar automaticamente o estilo reativo que refatoramos! */}
+      <Input
+        label="Nome do Autor"
+        id="author-name"
+        placeholder="Ex: Machado de Assis"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        required
+      />
+
+      {/* Input Nacionalidade */}
+      <Input
+        label="Nacionalidade"
+        id="author-nationality"
+        placeholder="Ex: Brasileira"
+        value={nationality}
+        onChange={(e) => setNationality(e.target.value)}
+      />
+
+      {/* Input Data de Nascimento */}
+      <Input
+        label="Data de Nascimento"
+        id="author-birth-date"
+        type="date"
+        value={birth_date}
+        onChange={(e) => setBirthDate(e.target.value)}
+      />
+
+      {/* Botões de Ação */}
+      <div className="flex items-center gap-3 pt-2">
         
-        {/* Alerta de erro local se houver */}
-        {error && (
-          <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-3 text-xs text-red-400 font-medium">
-            ⚠️ {error}
-          </div>
+        <Button type="submit" isLoading={isSubmitting}>
+          {autorParaEditar ? "Salvar Alterações" : "Cadastrar Autor"}
+        </Button>
+
+        {/* Botão de Cancelar */}
+        {onCancelar && (
+          <button
+            type="button"
+            onClick={onCancelar}
+            // 🎨 Ajustado: O botão herda a semântica neutra (estilo o variant secondary/outline do seu Button)
+            className="flex-1 justify-center rounded-lg bg-app-bg border border-app-border px-4 py-3 text-sm font-semibold text-app-text hover:bg-app-bg/80 transition-all duration-200 cursor-pointer text-center"
+          >
+            Cancelar
+          </button>
         )}
 
-        {/* Input Nome */}
-        <Input
-          label="Nome do Autor"
-          id="author-name"
-          placeholder="Ex: Machado de Assis"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-
-        {/* Input Nacionalidade */}
-        <Input
-          label="Nacionalidade"
-          id="author-nationality"
-          placeholder="Ex: Brasileira"
-          value={nationality}
-          onChange={(e) => setNationality(e.target.value)}
-        />
-
-        {/* Input Data de Nascimento */}
-        <Input
-          label="Data de Nascimento"
-          id="author-birth-date"
-          type="date"
-          value={birth_date}
-          onChange={(e) => setBirthDate(e.target.value)}
-        />
-
-        {/* Botões de Ação */}
-        <div className="flex items-center gap-3 pt-2">
-          
-          <Button type="submit" isLoading={isSubmitting}>
-            {autorParaEditar ? "Salvar Alterações" : "Cadastrar Autor"}
-          </Button>
-
-          {/* Botão de Cancelar (Só aparece se a página pai passar a função) */}
-          {onCancelar && (
-            <button
-              type="button"
-              onClick={onCancelar}
-              className="flex-1 justify-center rounded-lg bg-slate-700/50 hover:bg-slate-700 border border-slate-600 px-4 py-3 text-sm font-semibold text-slate-300 hover:text-white transition-colors duration-200 cursor-pointer text-center"
-            >
-              Cancelar
-            </button>
-          )}
-
-        </div>
-      </form>
-    </div>
-  );
+      </div>
+    </form>
+  </div>
+);
 }
