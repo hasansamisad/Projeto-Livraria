@@ -50,7 +50,7 @@ export function CadastroUsuario() {
         if (erroSimples.toLowerCase().includes("já existe") || erroSimples.toLowerCase().includes("already exists")) {
           toast.error("📧 Este e-mail já está em uso.");
         } else {
-          toast.error(`⚠️ ${erroSimples}`);
+          toast.error(` ${erroSimples}`);
         }
       } else {
         toast.error("Erro ao cadastrar usuário. Tente novamente mais tarde.");
@@ -61,66 +61,68 @@ export function CadastroUsuario() {
   };
   
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-900 px-4">
-      <div className="w-full max-w-md space-y-8 rounded-2xl bg-slate-800 p-8 shadow-xl">
+  <div className="flex min-h-screen items-center justify-center bg-app-bg px-4 transition-colors duration-200">
+    <div className="w-full max-w-md space-y-8 rounded-2xl bg-app-surface p-8 shadow-xl border border-app-border transition-colors duration-200">
+      
+      <div className="text-center mb-6">
+        <h2 className="text-3xl font-bold text-app-text">Criar sua conta</h2>
+        <p className="text-sm text-app-muted mt-1">Cadastre-se para acessar o sistema</p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
         
-        <div className="text-center mb-6">
-          <h2 className="text-3xl font-bold text-white">Criar sua conta</h2>
-          <p className="text-sm text-slate-400 mt-1">Cadastre-se para acessar o sistema</p>
+        <Input 
+          label="Nome Completo" 
+          id="name" 
+          placeholder="Seu nome completo"
+          value={name} 
+          onChange={(e) => setName(e.target.value)} 
+          required 
+        />
+        
+        <Input 
+          label="E-mail" 
+          id="email" 
+          type="email" 
+          placeholder="exemplo@email.com"
+          value={email} 
+          onChange={(e) => setEmail(e.target.value)} 
+          required 
+        />
+
+        <Input 
+          label="Senha" 
+          id="password" 
+          type="password" 
+          placeholder="••••••••"
+          value={password} 
+          onChange={(e) => setPassword(e.target.value)} 
+          required 
+        />
+
+        <Input 
+          label="Confirmar Senha" 
+          id="confirmPassword" 
+          type="password" 
+          placeholder="••••••••"
+          value={confirmPassword} 
+          onChange={(e) => setConfirmPassword(e.target.value)} 
+          required 
+        />
+
+        <Button type="submit">Cadastrar Conta</Button>
+
+        <div className="text-center mt-4">
+          <Link
+            to="/login"
+            className="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition-colors"
+          >
+            Já tem uma conta? Faça login aqui
+          </Link>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          
-          {/* 🧹 O bloco de erro antigo sumiu daqui, deixando a UI muito mais limpa! */}
-          
-          <Input 
-            label="Nome Completo" 
-            id="name" 
-            value={name} 
-            onChange={(e) => setName(e.target.value)} 
-            required 
-          />
-          
-          <Input 
-            label="E-mail" 
-            id="email" 
-            type="email" 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
-            required 
-          />
-
-          <Input 
-            label="Senha" 
-            id="password" 
-            type="password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            required 
-          />
-
-          <Input 
-            label="Confirmar Senha" 
-            id="confirmPassword" 
-            type="password" 
-            value={confirmPassword} 
-            onChange={(e) => setConfirmPassword(e.target.value)} 
-            required 
-          />
-
-          <Button type="submit">Cadastrar Conta</Button>
-
-          <div className="text-center mt-4">
-            <Link
-              to="/login"
-              className="text-sm font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
-            >
-              Já tem uma conta? Faça login aqui
-            </Link>
-          </div>
-
-        </form>
-      </div>
+      </form>
     </div>
-  );
+  </div>
+);
 }

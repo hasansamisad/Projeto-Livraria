@@ -1,15 +1,20 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
-      // 🎨 Adicione essa extensão de cores aqui:
       colors: {
-        slate: {
-          850: '#1e293bfe', // Tom intermediário customizado
+        // 🎨 Suas novas classes semânticas utilitárias!
+        app: {
+          bg: 'var(--background)',
+          surface: 'var(--surface)',
+          text: 'var(--text-main)',
+          muted: 'var(--text-muted)',
+          border: 'var(--border)',
         }
       }
     },

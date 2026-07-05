@@ -152,58 +152,59 @@ export function GerenciarLivros() {
   ];
 
   return (
-    <div className="space-y-6 animate-fadeIn">
+  <div className="space-y-6 animate-fadeIn">
+    
+    {/* Topo da Página */}
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-app-border pb-5">
+      <div>
+        <h1 className="text-2xl font-extrabold text-app-text tracking-tight">Gerenciar Livros</h1>
+        <p className="text-sm text-app-muted mt-1">
+          Controle as obras disponíveis, vincule autores e edite as informações do acervo.
+        </p>
+      </div>
       
-      {/* Topo da Página */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-800 pb-5">
-        <div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">Gerenciar Livros</h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Controle as obras disponíveis, vincule autores e edite as informações do acervo.
-          </p>
-        </div>
-        
-        {!showForm && (
-          <button
-            onClick={handleCriarLivro}
-            className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors shadow-lg cursor-pointer"
-          >
-             Adicionar Livro
-          </button>
+      {!showForm && (
+        <button
+          onClick={handleCriarLivro}
+          className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors shadow-sm cursor-pointer"
+        >
+           Adicionar Livro
+        </button>
+      )}
+    </div>
+
+    {/* EXIBIÇÃO CONDICIONAL: OU FORMULÁRIO OU LISTA */}
+    {showForm ? (
+      <div className="max-w-xl mx-auto py-4">
+        <FormLivro
+          key={livroParaEditar ? `editar-${livroParaEditar.id}` : "novo-livro"}
+          livroParaEditar={livroParaEditar}
+          autoresDisponiveis={autores} 
+          onSubmit={handleSalvarLivro}
+          onCancelar={handleCancelar}
+          isSubmitting={isSubmitting}
+        />
+      </div>
+    ) : (
+      <div className="bg-app-surface rounded-2xl border border-app-border p-4 shadow-sm transition-colors duration-200">
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-12 space-y-3">
+            <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-app-muted text-sm animate-pulse">Carregando acervo de livros...</p>
+          </div>
+        ) : (
+          /* 💡 Sua tabela interna vai renderizar as colunas e capas de forma perfeitamente contextualizada */
+          <TabelaDados
+            columns={colunas}
+            data={livros}
+            onEdit={handleEditarLivro}
+            onDelete={handleDeletarClick}
+            emptyMessage="Nenhum livro cadastrado no acervo até o momento."
+          />
         )}
       </div>
+    )}
 
-      {/* EXIBIÇÃO CONDICIONAL: OU FORMULÁRIO OU LISTA */}
-      {showForm ? (
-        <div className="max-w-xl mx-auto py-4">
-          <FormLivro
-            key={livroParaEditar ? `editar-${livroParaEditar.id}` : "novo-livro"}
-            livroParaEditar={livroParaEditar}
-            autoresDisponiveis={autores} 
-            onSubmit={handleSalvarLivro}
-            onCancelar={handleCancelar}
-            isSubmitting={isSubmitting}
-          />
-        </div>
-      ) : (
-        <div className="bg-slate-850 rounded-2xl border border-slate-800 p-4 shadow-md">
-          {loading ? (
-            <div className="flex flex-col items-center justify-center py-12 space-y-3">
-              <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-              <p className="text-slate-400 text-sm animate-pulse">Carregando acervo de livros...</p>
-            </div>
-          ) : (
-            <TabelaDados
-              columns={colunas}
-              data={livros}
-              onEdit={handleEditarLivro}
-              onDelete={handleDeletarClick}
-              emptyMessage="Nenhum livro cadastrado no acervo até o momento."
-            />
-          )}
-        </div>
-      )}
-
-    </div>
-  );
+  </div>
+);
 }

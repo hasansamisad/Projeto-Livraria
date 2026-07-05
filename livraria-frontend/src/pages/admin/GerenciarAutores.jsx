@@ -101,58 +101,62 @@ export function GerenciarAutores() {
   ];
 
   return (
-    <div className="space-y-6 animate-fadeIn">
+  <div className="space-y-6 animate-fadeIn">
+    
+    {/* Topo da Página */}
+
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-app-border pb-5">
+      <div>
+        {/* 🎨 Ajustado: Cor do título reativa ao tema */}
+        <h1 className="text-2xl font-extrabold text-app-text tracking-tight">Gerenciar Autores</h1>
+        <p className="text-sm text-app-muted mt-1">
+          Cadastre, edite ou remova os escritores que compõem o catálogo da sua livraria.
+        </p>
+      </div>
       
-      {/* Topo da Página */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-800 pb-5">
-        <div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">Gerenciar Autores</h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Cadastre, edite ou remova os escritores que compõem o catálogo da sua livraria.
-          </p>
-        </div>
-        
-        {/* Só exibe o botão se o formulário estiver fechado */}
-        {!showForm && (
-          <button
-            onClick={handleCriarAutor} 
-            className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors shadow-lg cursor-pointer"
-          >
-             Adicionar Autor
-          </button>
+      {/* Só exibe o botão se o formulário estiver fechado */}
+      {!showForm && (
+        <button
+          onClick={handleCriarAutor} 
+          className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors shadow-sm cursor-pointer"
+        >
+           Adicionar Autor
+        </button>
+      )}
+    </div>
+
+    {/* EXIBIÇÃO CONDICIONAL: OU MOSTRA O FORMULÁRIO OU MOSTRA A LISTA */}
+    {showForm ? (
+      <div className="max-w-xl mx-auto py-4">
+        <FormAutor
+          key={autorParaEditar ? `editar-${autorParaEditar.id}` : "novo-autor"}
+          autorParaEditar={autorParaEditar}
+          onSubmit={handleSalvarAutor}
+          onCancelar={handleCancelar}
+          isSubmitting={isSubmitting}
+        />
+      </div>
+    ) : (
+      <div className="bg-app-surface rounded-2xl border border-app-border p-4 shadow-sm transition-colors duration-200">
+        {loading ? (
+          /* 🎨 Ajustado: Spinner de carregamento integrado com as cores globais */
+          <div className="flex flex-col items-center justify-center py-12 space-y-3">
+            <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-app-muted text-sm animate-pulse">Carregando autores...</p>
+          </div>
+        ) : (
+          /* 💡 Sua tabela vai renderizar as linhas e ações de forma limpa e contextualizada */
+          <TabelaDados
+            columns={colunas}
+            data={autores}
+            onEdit={handleEditarAutor} 
+            onDelete={handleDeletarClick}
+            emptyMessage="Nenhum autor cadastrado até o momento."
+          />
         )}
       </div>
+    )}
 
-      {/* EXIBIÇÃO CONDICIONAL: OU MOSTRA O FORMULÁRIO OU MOSTRA A LISTA */}
-      {showForm ? (
-        <div className="max-w-xl mx-auto py-4">
-          <FormAutor
-            key={autorParaEditar ? `editar-${autorParaEditar.id}` : "novo-autor"}
-            autorParaEditar={autorParaEditar}
-            onSubmit={handleSalvarAutor}
-            onCancelar={handleCancelar}
-            isSubmitting={isSubmitting}
-          />
-        </div>
-      ) : (
-        <div className="bg-slate-850 rounded-2xl border border-slate-800 p-4 shadow-md">
-          {loading ? (
-            <div className="flex flex-col items-center justify-center py-12 space-y-3">
-              <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-              <p className="text-slate-400 text-sm animate-pulse">Carregando autores...</p>
-            </div>
-          ) : (
-            <TabelaDados
-              columns={colunas}
-              data={autores}
-              onEdit={handleEditarAutor} 
-              onDelete={handleDeletarClick}
-              emptyMessage="Nenhum autor cadastrado até o momento."
-            />
-          )}
-        </div>
-      )}
-
-    </div>
-  );
+  </div>
+);
 }
