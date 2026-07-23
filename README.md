@@ -1,16 +1,16 @@
-# 📚 Sami Books - Livraria Full Stack
+#  Sami Books - Livraria Full Stack
 
 Uma aplicação web completa para gerenciamento de catálogo de livros, controle de acervo e gerenciamento administrativo. O projeto foi desenvolvido utilizando uma arquitetura robusta dividida em uma API backend em Node.js com banco de dados relacional e um frontend reativo moderno, totalmente integrados através de contêineres Docker e implantados em nuvem com esteiras automatizadas de CI/CD.
 
 ---
 
-## 🖥️ Demonstração do Ecossistema
+##  Demonstração do Ecossistema
 
 ![Interface Principal do Acervo - Sami Books](https://github.com/user-attachments/assets/ab349b6f-e4b9-4ecd-a4ce-550e8510dd31)
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+##  Tecnologias Utilizadas
 
 ### Frontend
 * **React.js & Vite:** Estrutura ágil para renderização otimizada e SPA (Single Page Application).
@@ -30,7 +30,7 @@ Uma aplicação web completa para gerenciamento de catálogo de livros, controle
 
 ---
 
-## 🛡️ Arquitetura e Regras de Negócio Implementadas
+##  Arquitetura e Regras de Negócio Implementadas
 
 * **Autenticação & Rotas Privadas:** O acervo de livros e autores é público para leitura de visitantes. No entanto, as operações de escrita e modificação exigem autenticação via token, liberando um painel administrativo protegido.
 * **Segurança Dinâmica no CRUD:** Para garantir a integridade da aplicação, o ecossistema backend valida a propriedade dos registros, impedindo terminantemente que um usuário autenticado delete ou altere livros cadastrados por outra pessoa.
@@ -39,7 +39,7 @@ Uma aplicação web completa para gerenciamento de catálogo de livros, controle
 
 ---
 
-## ⚙️ Como Executar o Projeto Localmente
+##  Como Executar o Projeto Localmente
 
 Certifique-se de ter o **Docker** e o **Docker Compose** instalados em sua máquina.
 
@@ -62,7 +62,7 @@ Assim que o Docker inicializar os containers com sucesso, os serviços estarão 
 
 * *API Backend:* http://localhost:3000
 
-## 📂 Estrutura do Repositório
+##  Estrutura do Repositório
 
 ```Plaintext
 ├── livraria-api/          # Servidor Node.js, Sequelize ORM, Models e Validações (Backend)
